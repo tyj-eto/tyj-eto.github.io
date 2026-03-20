@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>宿舍中心 - 宿舍智能推荐与管理系统</title>
+    <link href="css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        /* 核心布局 */
+        #layoutSidenav {
+            display: flex;
+            width: 100%;
+            min-height: calc(100vh - 56px);
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #layoutSidenav_nav {
+            width: 225px;
+            flex-shrink: 0;
+            transition: transform 0.3s ease-in-out;
+            position: relative;
+            z-index: 100;
+            background-color: #212529;
+        }
+        #layoutSidenav_content {
+            flex: 1;
+            transition: all 0.3s ease-in-out;
+            overflow-x: hidden;
+        }
+        #layoutSidenav.sb-sidenav-toggled #layoutSidenav_nav {
+            transform: translateX(-225px);
+        }
+        .content-wrapper {
+            max-width: 1600px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 1rem;
+            transition: all 0.3s ease-in-out;
+        }
+        #layoutSidenav.sb-sidenav-toggled .content-wrapper {
+            max-width: 100%;
+            padding: 0;
+        }
+
+        /* 宿舍中心专属样式 */
+        .dorm-info-card {
+            border-left: 4px solid #4F46E5;
+        }
+        .roommate-card {
+            transition: transform 0.2s;
+        }
+        .roommate-card:hover {
+            transform: translateY(-5px);
+        }
+        .dorm-layout {
+            width: 100%;
+            max-width: 300px;
+            height: 250px;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            position: relative;
+            background-color: #F9FAFB;
+        }
+        .bed-item {
+            position: absolute;
+            width: 60px;
+            height: 40px;
+            border: 1px solid #4F46E5;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            background-color: white;
+        }
+        .bed-occupied {
+            background-color: #E0E7FF;
+            color: #4F46E5;
+            font-weight: 500;
+        }
+        .duty-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .duty-table th, .duty-table td {
+            border: 1px solid #E5E7EB;
+            padding: 8px 12px;
+            text-align: center;
+        }
+        .duty-table th {
+            background-color: #F3F4F6;
+        }
+    </style>
+</head>
+<body class="sb-nav-fixed">
+    <!-- 顶部导航栏 -->
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <button class="btn btn-link btn-sm me-2" id="sidebarToggle" href="#!">
+            <i class="fas fa-bars text-white"></i>
+        </button>
+        <a class="navbar-brand" href="index.html">宿舍智能推荐与管理系统</a>
+        <ul class="navbar-nav ms-auto me-3 me-lg-4">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-user fa-fw"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="#!">个人中心</a></li>
+                    <li><hr class="dropdown-divider" /></li>
+                    <li><a class="dropdown-item" href="login.html">退出登录</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- 左侧菜单栏 -->
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <div class="sb-sidenav-menu-heading">核心功能</div>
+                        <a class="nav-link" href="index.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            首页
+                        </a>
+                        <a class="nav-link" href="survey.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-clipboard-list"></i></div>
+                            多维问卷
+                        </a>
+                        <a class="nav-link" href="match.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                            加权匹配
+                        </a>
+                        <a class="nav-link" href="profile.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tags"></i></div>
+                            标签画像
+                        </a>
+                        <a class="nav-link" href="location.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            宿舍位置
+                        </a>
+                        <div class="sb-sidenav-menu-heading">系统管理</div>
+                        <a class="nav-link active" href="dorms.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-home"></i></div>
+                            宿舍中心
+                        </a>
+                        <a class="nav-link" href="personal.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                            个人中心
+                        </a>
+                    </div>
+                </div>
+                <div class="sb-sidenav-footer">
+                    <div class="small">Logged in as:</div>
+                    学生用户
+                </div>
+            </nav>
+        </div>
+
+        <!-- 主内容区域 -->
+        <div id="layoutSidenav_content">
+            <div class="content-wrapper">
+                <main>
+                    <div class="container-fluid px-4">
+                        <h1 class="mt-4">宿舍中心</h1>
+                        <ol class="breadcrumb mb-4">
+                            <li class="breadcrumb-item"><a href="index.html">首页</a></li>
+                            <li class="breadcrumb-item active">宿舍中心</li>
+                        </ol>
+
+                        <!-- 1. 未填写问卷提示 -->
+                        <div id="noSurveyCard" class="card mb-4 d-none">
+                            <div class="card-body text-center py-5">
+                                <i class="fas fa-exclamation-circle text-warning fs-1 mb-3"></i>
+                                <h4 class="mb-3">请先完成多维问卷</h4>
+                                <p class="text-muted mb-4">只有填写完问卷，系统才能为你匹配宿舍和舍友</p>
+                                <a href="survey.html" class="btn btn-primary">去填写问卷</a>
+                            </div>
+                        </div>
+
+                        <!-- 2. 未匹配宿舍提示 -->
+                        <div id="noMatchCard" class="card mb-4 d-none">
+                            <div class="card-body text-center py-5">
+                                <i class="fas fa-users text-warning fs-1 mb-3"></i>
+                                <h4 class="mb-3">请先完成舍友匹配</h4>
+                                <p class="text-muted mb-4">你已填写问卷，请前往加权匹配页面分配宿舍</p>
+                                <a href="match.html" class="btn btn-primary">去匹配舍友</a>
+                            </div>
+                        </div>
+
+                        <!-- 3. 宿舍中心主内容 -->
+                        <div id="dormCenterCard" class="d-none">
+                            <!-- 第一行：宿舍基本信息 + 布局 -->
+                            <div class="row mb-4">
+                                <div class="col-md-8">
+                                    <div class="card h-100 dorm-info-card">
+                                        <div class="card-header">
+                                            <i class="fas fa-info-circle me-1"></i>
+                                            宿舍基本信息
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <h6 class="text-muted">宿舍编号</h6>
+                                                    <h4 id="dormNumber" class="mb-0">3栋 402室</h4>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <h6 class="text-muted">宿舍类型</h6>
+                                                    <h4 id="dormType" class="mb-0">4人间（上床下桌）</h4>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <h6 class="text-muted">宿舍朝向</h6>
+                                                    <p class="mb-0">朝南 <i class="fas fa-sun text-warning"></i></p>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <h6 class="text-muted">入住情况</h6>
+                                                    <p class="mb-0"><span id="occupiedCount">3</span> / 4 人已入住</p>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <h6 class="text-muted">空调默认温度</h6>
+                                                    <p class="mb-0" id="dormTemp">22-24℃</p>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <h6 class="text-muted">熄灯时间</h6>
+                                                    <p class="mb-0">23:30</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="card h-100">
+                                        <div class="card-header">
+                                            <i class="fas fa-layout me-1"></i>
+                                            宿舍布局
+                                        </div>
+                                        <div class="card-body d-flex justify-content-center">
+                                            <div class="dorm-layout">
+                                                <div class="bed-item bed-occupied" style="top: 20px; left: 20px;">
+                                                    床位1<br>（你）
+                                                </div>
+                                                <div class="bed-item bed-occupied" style="top: 20px; left: 120px;">
+                                                    床位2<br>张三
+                                                </div>
+                                                <div class="bed-item bed-occupied" style="top: 100px; left: 20px;">
+                                                    床位3<br>李四
+                                                </div>
+                                                <div class="bed-item" style="top: 100px; left: 120px;">
+                                                    床位4<br>（空）
+                                                </div>
+                                                <div style="position: absolute; bottom: 20px; left: 140px; width: 30px; height: 50px; border: 1px solid #9CA3AF; border-radius: 2px; text-align: center; font-size: 12px;">门</div>
+                                                <div style="position: absolute; top: 20px; right: 20px; width: 50px; height: 80px; border: 1px solid #9CA3AF; border-radius: 2px; text-align: center; font-size: 12px; padding-top: 10px;">阳台</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 第二行：舍友信息 -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <i class="fas fa-users me-1"></i>
+                                    舍友信息
+                                </div>
+                                <div class="card-body">
+                                    <div class="row" id="roommateList">
+                                        <!-- 舍友1（自己） -->
+                                        <div class="col-md-3 mb-3">
+                                            <div class="card roommate-card h-100">
+                                                <div class="card-body text-center">
+                                                    <div class="bg-primary text-white rounded-circle w-16 h-16 d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 60px; height: 60px;">
+                                                        <i class="fas fa-user fs-3"></i>
+                                                    </div>
+                                                    <h5 class="card-title mb-1">我</h5>
+                                                    <p class="text-muted small mb-2" id="selfInfo">大一 · 理工科</p>
+                                                    <div class="d-flex flex-wrap gap-1 justify-content-center" id="selfTags">
+                                                        <span class="badge bg-primary">规律作息</span>
+                                                        <span class="badge bg-primary">爱干净</span>
+                                                        <span class="badge bg-primary">偏内向</span>
+                                                    </div>
+                                                    <a href="profile.html" class="btn btn-sm btn-outline-primary mt-2">查看我的画像</a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 舍友2 -->
+                                        <div class="col-md-3 mb-3">
+                                            <div class="card roommate-card h-100">
+                                                <div class="card-body text-center">
+                                                    <div class="bg-success text-white rounded-circle w-16 h-16 d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 60px; height: 60px;">
+                                                        <i class="fas fa-user fs-3"></i>
+                                                    </div>
+                                                    <h5 class="card-title mb-1">张三</h5>
+                                                    <p class="text-muted small mb-2">大一 · 理工科</p>
+                                                    <div class="d-flex flex-wrap gap-1 justify-content-center">
+                                                        <span class="badge bg-success">规律作息</span>
+                                                        <span class="badge bg-success">爱干净</span>
+                                                        <span class="badge bg-success">偏内向</span>
+                                                    </div>
+                                                    <button class="btn btn-sm btn-outline-success mt-2">查看TA的画像</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 舍友3 -->
+                                        <div class="col-md-3 mb-3">
+                                            <div class="card roommate-card h-100">
+                                                <div class="card-body text-center">
+                                                    <div class="bg-info text-white rounded-circle w-16 h-16 d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 60px; height: 60px;">
+                                                        <i class="fas fa-user fs-3"></i>
+                                                    </div>
+                                                    <h5 class="card-title mb-1">李四</h5>
+                                                    <p class="text-muted small mb-2">大一 · 理工科</p>
+                                                    <div class="d-flex flex-wrap gap-1 justify-content-center">
+                                                        <span class="badge bg-info">规律作息</span>
+                                                        <span class="badge bg-info">中等卫生</span>
+                                                        <span class="badge bg-info">偏外向</span>
+                                                    </div>
+                                                    <button class="btn btn-sm btn-outline-info mt-2">查看TA的画像</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 空床位 -->
+                                        <div class="col-md-3 mb-3">
+                                            <div class="card h-100 border-dashed border-secondary">
+                                                <div class="card-body text-center">
+                                                    <div class="bg-secondary bg-opacity-10 rounded-circle w-16 h-16 d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 60px; height: 60px;">
+                                                        <i class="fas fa-bed fs-3 text-secondary"></i>
+                                                    </div>
+                                                    <h5 class="card-title mb-1 text-secondary">空床位</h5>
+                                                    <p class="text-muted small mb-2">待分配</p>
+                                                    <button class="btn btn-sm btn-outline-secondary mt-2">查看匹配候选人</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 第三行：公告 + 值日表 -->
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div class="card h-100">
+                                        <div class="card-header">
+                                            <i class="fas fa-bullhorn me-1"></i>
+                                            宿舍公告
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-3 border-bottom pb-2">
+                                                <h6 class="mb-1">卫生检查通知</h6>
+                                                <p class="text-muted small mb-0">本周三（6月15日）下午2点将进行宿舍卫生大检查，请各位同学提前整理好个人物品，保持宿舍整洁。</p>
+                                                <p class="text-muted small mt-1">发布时间：2026-06-10</p>
+                                            </div>
+                                            <div class="mb-3 border-bottom pb-2">
+                                                <h6 class="mb-1">宿舍安全提醒</h6>
+                                                <p class="text-muted small mb-0">禁止在宿舍使用大功率电器（如电煮锅、吹风机等），禁止私拉乱接电线，注意用电安全。</p>
+                                                <p class="text-muted small mt-1">发布时间：2026-06-05</p>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">熄灯时间调整</h6>
+                                                <p class="text-muted small mb-0">期末考试期间（6月20日-7月5日），熄灯时间调整为00:00，请注意合理安排作息。</p>
+                                                <p class="text-muted small mt-1">发布时间：2026-06-01</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="card h-100">
+                                        <div class="card-header">
+                                            <i class="fas fa-calendar-check me-1"></i>
+                                            卫生值日表
+                                        </div>
+                                        <div class="card-body">
+                                            <table class="duty-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>周一</th>
+                                                        <th>周二</th>
+                                                        <th>周三</th>
+                                                        <th>周四</th>
+                                                        <th>周五</th>
+                                                        <th>周六</th>
+                                                        <th>周日</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>我</td>
+                                                        <td>张三</td>
+                                                        <td>李四</td>
+                                                        <td>轮值</td>
+                                                        <td>我</td>
+                                                        <td>张三</td>
+                                                        <td>李四</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="mt-3 text-center">
+                                                <button class="btn btn-sm btn-outline-primary">更新值日表</button>
+                                                <button class="btn btn-sm btn-outline-success ms-2">今日卫生打卡</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 第四行：管理功能 -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <i class="fas fa-cog me-1"></i>
+                                    宿舍管理
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-3 mb-3">
+                                            <div class="d-flex align-items-center p-3 bg-primary bg-opacity-10 rounded h-100">
+                                                <i class="fas fa-exchange-alt text-primary fs-3 me-3"></i>
+                                                <div>
+                                                    <h6 class="mb-0">申请换宿舍</h6>
+                                                    <p class="text-muted small mb-0">提交换宿申请</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="d-flex align-items-center p-3 bg-warning bg-opacity-10 rounded h-100">
+                                                <i class="fas fa-tools text-warning fs-3 me-3"></i>
+                                                <div>
+                                                    <h6 class="mb-0">宿舍报修</h6>
+                                                    <p class="text-muted small mb-0">报修家具/电器</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="d-flex align-items-center p-3 bg-success bg-opacity-10 rounded h-100">
+                                                <i class="fas fa-star text-success fs-3 me-3"></i>
+                                                <div>
+                                                    <h6 class="mb-0">宿舍评分</h6>
+                                                    <p class="text-muted small mb-0">评价宿舍环境</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="d-flex align-items-center p-3 bg-info bg-opacity-10 rounded h-100">
+                                                <i class="fas fa-file-alt text-info fs-3 me-3"></i>
+                                                <div>
+                                                    <h6 class="mb-0">宿舍手册</h6>
+                                                    <p class="text-muted small mb-0">查看宿舍规则</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid px-4">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="text-muted">Copyright &copy; 宿舍智能推荐与管理系统 2026</div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 侧边栏切换
+            const btn = document.getElementById('sidebarToggle');
+            const layout = document.getElementById('layoutSidenav');
+            if (btn && layout) {
+                btn.addEventListener('click', function() {
+                    layout.classList.toggle('sb-sidenav-toggled');
+                });
+            }
+
+            // 读取标记和数据
+            const surveySubmitted = localStorage.getItem('surveySubmitted') === 'true';
+            const dormMatched = localStorage.getItem('dormMatched') === 'true';
+            const surveyData = localStorage.getItem('userSurveyData') ? JSON.parse(localStorage.getItem('userSurveyData')) : null;
+            const dormInfo = localStorage.getItem('dormInfo') ? JSON.parse(localStorage.getItem('dormInfo')) : null;
+
+            // 逻辑判断：显示对应内容
+            if (!surveySubmitted) {
+                // 未填写问卷
+                document.getElementById('noSurveyCard').classList.remove('d-none');
+            } else if (surveySubmitted && !dormMatched) {
+                // 已填问卷但未匹配
+                document.getElementById('noMatchCard').classList.remove('d-none');
+            } else if (surveySubmitted && dormMatched && dormInfo) {
+                // 已匹配：显示宿舍中心
+                document.getElementById('dormCenterCard').classList.remove('d-none');
+                
+                // 填充宿舍信息
+                document.getElementById('dormNumber').textContent = dormInfo.dormNumber;
+                document.getElementById('dormType').textContent = dormInfo.dormType;
+                document.getElementById('occupiedCount').textContent = dormInfo.occupiedCount;
+                document.getElementById('dormTemp').textContent = dormInfo.temp;
+                
+                // 填充个人信息和标签
+                if (surveyData) {
+                    document.getElementById('selfInfo').textContent = `${surveyData.grade} · ${surveyData.major}`;
+                    // 清空原有标签
+                    document.getElementById('selfTags').innerHTML = '';
+                    // 添加个人标签
+                    dormInfo.roommates[0].tags.forEach(tag => {
+                        document.getElementById('selfTags').innerHTML += `<span class="badge bg-primary">${tag}</span>`;
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>

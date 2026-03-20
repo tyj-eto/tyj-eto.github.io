@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>加权匹配 - 宿舍智能推荐与管理系统</title>
+    <link href="css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        /* 核心布局 */
+        #layoutSidenav {
+            display: flex;
+            width: 100%;
+            min-height: calc(100vh - 56px);
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #layoutSidenav_nav {
+            width: 225px;
+            flex-shrink: 0;
+            transition: transform 0.3s ease-in-out;
+            position: relative;
+            z-index: 100;
+            background-color: #212529;
+        }
+        #layoutSidenav_content {
+            flex: 1;
+            transition: all 0.3s ease-in-out;
+            overflow-x: hidden;
+        }
+        #layoutSidenav.sb-sidenav-toggled #layoutSidenav_nav {
+            transform: translateX(-225px);
+        }
+        .content-wrapper {
+            max-width: 1600px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 1rem;
+            transition: all 0.3s ease-in-out;
+        }
+        #layoutSidenav.sb-sidenav-toggled .content-wrapper {
+            max-width: 100%;
+            padding: 0;
+        }
+        .match-card {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .match-score {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4F46E5;
+        }
+    </style>
+</head>
+<body class="sb-nav-fixed">
+    <!-- 顶部导航栏 -->
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <button class="btn btn-link btn-sm me-2" id="sidebarToggle" href="#!">
+            <i class="fas fa-bars text-white"></i>
+        </button>
+        <a class="navbar-brand" href="index.html">宿舍智能推荐与管理系统</a>
+        <ul class="navbar-nav ms-auto me-3 me-lg-4">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-user fa-fw"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="#!">个人中心</a></li>
+                    <li><hr class="dropdown-divider" /></li>
+                    <li><a class="dropdown-item" href="login.html">退出登录</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- 左侧菜单栏 -->
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <div class="sb-sidenav-menu-heading">核心功能</div>
+                        <a class="nav-link" href="index.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            首页
+                        </a>
+                        <a class="nav-link" href="survey.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-clipboard-list"></i></div>
+                            多维问卷
+                        </a>
+                        <a class="nav-link active" href="match.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                            加权匹配
+                        </a>
+                        <a class="nav-link" href="profile.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tags"></i></div>
+                            标签画像
+                        </a>
+                        <a class="nav-link" href="location.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            宿舍位置
+                        </a>
+                        <div class="sb-sidenav-menu-heading">系统管理</div>
+                        <a class="nav-link" href="dorms.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-home"></i></div>
+                            宿舍中心
+                        </a>
+                        <a class="nav-link" href="personal.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                            个人中心
+                        </a>
+                    </div>
+                </div>
+                <div class="sb-sidenav-footer">
+                    <div class="small">Logged in as:</div>
+                    学生用户
+                </div>
+            </nav>
+        </div>
+
+        <!-- 主内容：加权匹配 -->
+        <div id="layoutSidenav_content">
+            <div class="content-wrapper">
+                <main>
+                    <div class="container-fluid px-4">
+                        <h1 class="mt-4">舍友加权匹配</h1>
+                        <ol class="breadcrumb mb-4">
+                            <li class="breadcrumb-item"><a href="index.html">首页</a></li>
+                            <li class="breadcrumb-item active">加权匹配</li>
+                        </ol>
+
+                        <!-- 未填写问卷提示 -->
+                        <div id="noSurveyCard" class="card match-card mb-4 d-block">
+                            <div class="card-body text-center py-5">
+                                <i class="fas fa-exclamation-circle text-warning fs-1 mb-3"></i>
+                                <h4 class="mb-3">请先完成多维问卷</h4>
+                                <p class="text-muted mb-4">只有填写完问卷，系统才能根据你的偏好为你匹配最优舍友和宿舍</p>
+                                <a href="survey.html" class="btn btn-primary">去填写问卷</a>
+                            </div>
+                        </div>
+
+                        <!-- 匹配页面主内容 -->
+                        <div id="matchCard" class="card match-card mb-4 d-none">
+                            <div class="card-header">
+                                <i class="fas fa-calculator me-1"></i>
+                                匹配依据（你的偏好）
+                            </div>
+                            <div class="card-body">
+                                <!-- 匹配依据 -->
+                                <div class="row mb-4" id="matchBasis">
+                                    <div class="col-md-6 mb-3">
+                                        <h6>核心偏好</h6>
+                                        <ul class="list-group">
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <span>最看重的特质：</span>
+                                                <strong id="traitBasis">规律作息</strong>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <span>作息时间：</span>
+                                                <strong id="sleepBasis">22:00-23:00</strong>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <span>卫生习惯：</span>
+                                                <strong id="cleanBasis">每周2-3次</strong>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <h6>其他偏好</h6>
+                                        <ul class="list-group">
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <span>是否介意吸烟：</span>
+                                                <strong id="smokeBasis">是</strong>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <span>安静需求：</span>
+                                                <strong id="noiseBasis">比较介意</strong>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <span>空调温度：</span>
+                                                <strong id="tempBasis">22-24℃</strong>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- 匹配按钮 -->
+                                <div class="text-center mb-4">
+                                    <button id="startMatch" class="btn btn-primary btn-lg">开始智能匹配</button>
+                                </div>
+
+                                <!-- 匹配结果（默认隐藏） -->
+                                <div id="matchResult" class="d-none">
+                                    <hr>
+                                    <h5 class="mb-3">匹配结果</h5>
+                                    <div class="row">
+                                        <div class="col-md-4 text-center mb-3">
+                                            <div class="match-score">95%</div>
+                                            <p class="text-muted">匹配度</p>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <h6>为你分配的宿舍：</h6>
+                                            <p id="dormNumberResult" class="fs-5">3栋 402室（4人间 · 朝南 · 上床下桌）</p>
+                                            <h6 class="mt-3">匹配到的舍友：</h6>
+                                            <ul class="list-group">
+                                                <li class="list-group-item">张三（大一 · 理工科 · 规律作息 · 爱干净 · 偏内向）</li>
+                                                <li class="list-group-item">李四（大一 · 理工科 · 规律作息 · 中等卫生 · 偏外向）</li>
+                                                <li class="list-group-item text-muted">床位4（待分配）</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <!-- 跳转按钮 -->
+                                    <div class="d-flex gap-3 mt-4">
+                                        <a href="profile.html" class="btn btn-outline-primary">查看我的标签画像</a>
+                                        <a href="dorms.html" class="btn btn-success ms-auto">进入宿舍中心</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid px-4">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="text-muted">Copyright &copy; 宿舍智能推荐与管理系统 2026</div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 侧边栏切换
+            const btn = document.getElementById('sidebarToggle');
+            const layout = document.getElementById('layoutSidenav');
+            if (btn && layout) {
+                btn.addEventListener('click', function() {
+                    layout.classList.toggle('sb-sidenav-toggled');
+                });
+            }
+
+            // 检查是否已填写问卷
+            const surveySubmitted = localStorage.getItem('surveySubmitted') === 'true';
+            const surveyData = localStorage.getItem('userSurveyData');
+            
+            if (surveySubmitted && surveyData) {
+                // 显示匹配页面
+                document.getElementById('noSurveyCard').classList.add('d-none');
+                document.getElementById('matchCard').classList.remove('d-none');
+                
+                // 解析问卷数据，填充匹配依据
+                const data = JSON.parse(surveyData);
+                document.getElementById('traitBasis').textContent = data.trait;
+                document.getElementById('sleepBasis').textContent = data.sleepTime;
+                document.getElementById('cleanBasis').textContent = data.cleanFreq;
+                document.getElementById('smokeBasis').textContent = data.mindSmoke;
+                document.getElementById('noiseBasis').textContent = data.mindNoise;
+                document.getElementById('tempBasis').textContent = data.temp;
+
+                // 开始匹配按钮点击事件：生成并保存宿舍/舍友信息
+                document.getElementById('startMatch').addEventListener('click', function() {
+                    // 生成宿舍信息（可根据实际需求扩展算法）
+                    const dormInfo = {
+                        dormNumber: '3栋 402室',
+                        dormType: '4人间（上床下桌）',
+                        direction: '朝南',
+                        occupiedCount: 3,
+                        totalCount: 4,
+                        temp: data.temp,
+                        roommates: [
+                            { name: '我', grade: data.grade, major: data.major, tags: [
+                                data.sleepTime.includes('22:00') ? '规律作息' : '晚睡型',
+                                data.cleanFreq === '每天' || data.cleanFreq === '每周2-3次' ? '爱干净' : '中等卫生',
+                                data.personality
+                            ]},
+                            { name: '张三', grade: data.grade, major: data.major, tags: ['规律作息', '爱干净', '偏内向'] },
+                            { name: '李四', grade: data.grade, major: data.major, tags: ['规律作息', '中等卫生', '偏外向'] }
+                        ]
+                    };
+
+                    // 保存宿舍信息
+                    localStorage.setItem('dormInfo', JSON.stringify(dormInfo));
+                    // 标记：已匹配宿舍
+                    localStorage.setItem('dormMatched', 'true');
+                    
+                    // 显示匹配结果
+                    document.getElementById('matchResult').classList.remove('d-none');
+                    // 滚动到结果区域
+                    document.getElementById('matchResult').scrollIntoView({ behavior: 'smooth' });
+                    
+                    alert('匹配成功！已为你分配最优宿舍和舍友');
+                });
+            } else {
+                // 显示未填写问卷提示
+                document.getElementById('noSurveyCard').classList.remove('d-none');
+                document.getElementById('matchCard').classList.add('d-none');
+            }
+        });
+    </script>
+</body>
+</html>

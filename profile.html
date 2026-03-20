@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>标签画像 - 宿舍智能推荐与管理系统</title>
+    <link href="css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        /* 核心布局：和问卷/匹配页统一 */
+        #layoutSidenav {
+            display: flex;
+            width: 100%;
+            min-height: calc(100vh - 56px);
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #layoutSidenav_nav {
+            width: 225px;
+            flex-shrink: 0;
+            transition: transform 0.3s ease-in-out;
+            position: relative;
+            z-index: 100;
+            background-color: #212529;
+        }
+        #layoutSidenav_content {
+            flex: 1;
+            transition: all 0.3s ease-in-out;
+            overflow-x: hidden;
+        }
+        #layoutSidenav.sb-sidenav-toggled #layoutSidenav_nav {
+            transform: translateX(-225px);
+        }
+        .content-wrapper {
+            max-width: 1600px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 1rem;
+            transition: all 0.3s ease-in-out;
+        }
+        #layoutSidenav.sb-sidenav-toggled .content-wrapper {
+            max-width: 100%;
+            padding: 0;
+        }
+
+        /* 标签云样式 */
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 20px;
+        }
+        .tag {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .tag-lg {
+            font-size: 18px;
+            padding: 10px 20px;
+            background-color: #4F46E5;
+            color: white;
+        }
+        .tag-md {
+            font-size: 16px;
+            background-color: #E0E7FF;
+            color: #4F46E5;
+        }
+        .tag-sm {
+            background-color: #F3F4F6;
+            color: #374151;
+        }
+
+        /* 评分卡片样式 */
+        .rating-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .rating-bar {
+            height: 8px;
+            width: 70%;
+            background-color: #E5E7EB;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .rating-fill {
+            height: 100%;
+            background-color: #4F46E5;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="sb-nav-fixed">
+    <!-- 顶部导航栏（和其他页面统一） -->
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <button class="btn btn-link btn-sm me-2" id="sidebarToggle" href="#!">
+            <i class="fas fa-bars text-white"></i>
+        </button>
+        <a class="navbar-brand" href="index.html">宿舍智能推荐与管理系统</a>
+        <ul class="navbar-nav ms-auto me-3 me-lg-4">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-user fa-fw"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="#!">个人中心</a></li>
+                    <li><hr class="dropdown-divider" /></li>
+                    <li><a class="dropdown-item" href="login.html">退出登录</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- 左侧菜单栏（和其他页面统一） -->
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <div class="sb-sidenav-menu-heading">核心功能</div>
+                        <a class="nav-link" href="index.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            首页
+                        </a>
+                        <a class="nav-link" href="survey.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-clipboard-list"></i></div>
+                            多维问卷
+                        </a>
+                        <a class="nav-link" href="match.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                            加权匹配
+                        </a>
+                        <a class="nav-link active" href="profile.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tags"></i></div>
+                            标签画像
+                        </a>
+                        <a class="nav-link" href="location.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            宿舍位置
+                        </a>
+                        <div class="sb-sidenav-menu-heading">系统管理</div>
+                        <a class="nav-link" href="dorms.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-home"></i></div>
+                            宿舍中心
+                        </a>
+                        <a class="nav-link" href="personal.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                            个人中心
+                        </a>
+                    </div>
+                </div>
+                <div class="sb-sidenav-footer">
+                    <div class="small">Logged in as:</div>
+                    学生用户
+                </div>
+            </nav>
+        </div>
+
+        <!-- 主内容区域 -->
+        <div id="layoutSidenav_content">
+            <div class="content-wrapper">
+                <main>
+                    <div class="container-fluid px-4">
+                        <h1 class="mt-4">个人标签画像</h1>
+                        <ol class="breadcrumb mb-4">
+                            <li class="breadcrumb-item"><a href="index.html">首页</a></li>
+                            <li class="breadcrumb-item active">个人标签画像</li>
+                        </ol>
+
+                        <!-- 无数据提示 -->
+                        <div id="noDataCard" class="card mb-4 d-block">
+                            <div class="card-body text-center py-5">
+                                <i class="fas fa-exclamation-circle text-warning fs-1 mb-3"></i>
+                                <h4 class="mb-3">暂无画像数据</h4>
+                                <p class="text-muted mb-4">请先完成<a href="survey.html" class="text-primary">多维问卷</a>，系统将自动生成你的个人标签画像</p>
+                                <a href="survey.html" class="btn btn-primary">去填写问卷</a>
+                            </div>
+                        </div>
+
+                        <!-- 画像内容（默认隐藏，有数据时显示） -->
+                        <div id="profileCard" class="card mb-4 d-none">
+                            <div class="card-header">
+                                <i class="fas fa-tags me-1"></i>
+                                你的核心特征标签
+                            </div>
+                            <div class="card-body">
+                                <!-- 标签云 -->
+                                <div class="tag-cloud mb-5" id="tagCloud"></div>
+
+                                <!-- 维度评分 -->
+                                <h5 class="mb-3">维度评分（满分5分）</h5>
+                                <div class="mb-4">
+                                    <div class="rating-item">
+                                        <span>作息规律度</span>
+                                        <div class="rating-bar">
+                                            <div class="rating-fill" id="ratingSleep" style="width: 80%;"></div>
+                                        </div>
+                                        <span id="sleepScore">4分</span>
+                                    </div>
+                                    <div class="rating-item">
+                                        <span>卫生整洁度</span>
+                                        <div class="rating-bar">
+                                            <div class="rating-fill" id="ratingClean" style="width: 80%;"></div>
+                                        </div>
+                                        <span id="cleanScore">4分</span>
+                                    </div>
+                                    <div class="rating-item">
+                                        <span>安静需求度</span>
+                                        <div class="rating-bar">
+                                            <div class="rating-fill" id="ratingQuiet" style="width: 80%;"></div>
+                                        </div>
+                                        <span id="quietScore">4分</span>
+                                    </div>
+                                    <div class="rating-item">
+                                        <span>社交意愿度</span>
+                                        <div class="rating-bar">
+                                            <div class="rating-fill" id="ratingSocial" style="width: 60%;"></div>
+                                        </div>
+                                        <span id="socialScore">3分</span>
+                                    </div>
+                                    <div class="rating-item">
+                                        <span>生活兼容度</span>
+                                        <div class="rating-bar">
+                                            <div class="rating-fill" id="ratingCompat" style="width: 80%;"></div>
+                                        </div>
+                                        <span id="compatScore">4分</span>
+                                    </div>
+                                </div>
+
+                                <!-- 推荐匹配标签 -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="bg-success bg-opacity-10 p-3 rounded">
+                                            <h6 class="text-success mb-2"><i class="fas fa-check-circle me-1"></i> 适配舍友标签</h6>
+                                            <div id="matchTags" class="d-flex flex-wrap gap-2"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="bg-danger bg-opacity-10 p-3 rounded">
+                                            <h6 class="text-danger mb-2"><i class="fas fa-times-circle me-1"></i> 避坑舍友标签</h6>
+                                            <div id="avoidTags" class="d-flex flex-wrap gap-2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 一句话画像总结 -->
+                                <div class="bg-primary bg-opacity-10 p-4 rounded">
+                                    <h5 class="text-primary mb-2">个人画像总结</h5>
+                                    <p id="profileSummary" class="text-muted mb-0"></p>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="d-flex justify-content-between">
+                                    <a href="survey.html" class="btn btn-secondary">重新填写问卷</a>
+                                    <a href="match.html" class="btn btn-primary">查看舍友匹配结果</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid px-4">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="text-muted">Copyright &copy; 宿舍智能推荐与管理系统 2026</div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 读取问卷数据
+        function getSurveyData() {
+            const data = localStorage.getItem('userSurveyData');
+            return data ? JSON.parse(data) : null;
+        }
+
+        // 生成标签云
+        function generateTagCloud(data) {
+            const tags = [];
+            
+            // 核心标签（大标签）
+            if (data.sleepTime.includes('22:00') || data.sleepTime.includes('23:00')) {
+                tags.push('<span class="tag tag-lg">规律作息</span>');
+            } else if (data.sleepTime === '22:00前') {
+                tags.push('<span class="tag tag-lg">早睡型</span>');
+            } else {
+                tags.push('<span class="tag tag-lg">晚睡型</span>');
+            }
+            
+            if (data.cleanFreq === '每天' || data.cleanFreq === '每周2-3次') {
+                tags.push('<span class="tag tag-lg">爱干净</span>');
+            }
+            
+            tags.push(`<span class="tag tag-lg">${data.personality}</span>`);
+
+            // 中等标签
+            if (data.smoke === '否') {
+                tags.push('<span class="tag tag-md">无烟友</span>');
+            }
+            if (data.mindSmoke === '是') {
+                tags.push('<span class="tag tag-md">介意吸烟</span>');
+            }
+            if (data.nap === '是') {
+                tags.push('<span class="tag tag-md">午睡党</span>');
+            }
+            tags.push(`<span class="tag tag-md">${data.entertainment}爱好者</span>`);
+
+            // 小标签
+            tags.push(`<span class="tag tag-sm">${data.grade}${data.major}</span>`);
+            tags.push(`<span class="tag tag-sm">${data.mbti}</span>`);
+            tags.push(`<span class="tag tag-sm">空调${data.temp}</span>`);
+            tags.push(`<span class="tag tag-sm">${data.visitor}访客</span>`);
+            tags.push(`<span class="tag tag-sm">${data.studyInDorm}学习</span>`);
+
+            return tags.join('');
+        }
+
+        // 计算维度评分（1-5分）
+        function calculateRatings(data) {
+            const ratings = {};
+            
+            // 作息规律度
+            if (data.sleepTime === '22:00前') ratings.sleep = 5;
+            else if (data.sleepTime === '22:00-23:00') ratings.sleep = 4;
+            else if (data.sleepTime === '23:00-00:00') ratings.sleep = 2;
+            else ratings.sleep = 1;
+
+            // 卫生整洁度
+            if (data.cleanFreq === '每天') ratings.clean = 5;
+            else if (data.cleanFreq === '每周2-3次') ratings.clean = 4;
+            else if (data.cleanFreq === '每周1次') ratings.clean = 2;
+            else ratings.clean = 1;
+
+            // 安静需求度
+            if (data.mindNoise === '非常介意') ratings.quiet = 5;
+            else if (data.mindNoise === '比较介意') ratings.quiet = 4;
+            else if (data.mindNoise === '轻微介意') ratings.quiet = 2;
+            else ratings.quiet = 1;
+
+            // 社交意愿度
+            if (data.activity === '非常愿意') ratings.social = 5;
+            else if (data.activity === '愿意') ratings.social = 3;
+            else if (data.activity === '偶尔愿意') ratings.social = 2;
+            else ratings.social = 1;
+
+            // 生活兼容度
+            if (data.temp === '无所谓' && data.sleepReq === '无所谓') ratings.compat = 5;
+            else if (data.sleepReq === '基本一致') ratings.compat = 4;
+            else ratings.compat = 2;
+
+            return ratings;
+        }
+
+        // 生成匹配标签
+        function generateMatchTags(data) {
+            const match = [];
+            const avoid = [];
+
+            // 适配标签
+            if (data.sleepTime.includes('22:00') || data.sleepTime.includes('23:00')) {
+                match.push('<span class="badge bg-success">规律作息</span>');
+            } else {
+                match.push('<span class="badge bg-success">晚睡型</span>');
+            }
+            
+            if (data.cleanFreq === '每天' || data.cleanFreq === '每周2-3次') {
+                match.push('<span class="badge bg-success">爱干净</span>');
+            }
+            
+            match.push(`<span class="badge bg-success">${data.personality}</span>`);
+            if (data.mindSmoke === '是') {
+                match.push('<span class="badge bg-success">无烟友</span>');
+            }
+
+            // 避坑标签
+            if (data.mindSmoke === '是') {
+                avoid.push('<span class="badge bg-danger">吸烟</span>');
+            }
+            if (data.mindNoise === '非常介意' || data.mindNoise === '比较介意') {
+                avoid.push('<span class="badge bg-danger">吵闹</span>');
+            }
+            if (data.sleepTime.includes('22:00')) {
+                avoid.push('<span class="badge bg-danger">晚睡型</span>');
+            } else if (data.sleepTime === '00:00后') {
+                avoid.push('<span class="badge bg-danger">早睡型</span>');
+            }
+            if (data.cleanFreq === '每天') {
+                avoid.push('<span class="badge bg-danger">不爱干净</span>');
+            }
+
+            return {
+                match: match.join(''),
+                avoid: avoid.join('')
+            };
+        }
+
+        // 生成一句话总结
+        function generateSummary(data, ratings) {
+            let summary = `你是一位「${data.personality}+${data.cleanFreq === '每天' || data.cleanFreq === '每周2-3次' ? '爱干净+' : ''}${data.sleepTime.includes('22:00') || data.sleepTime.includes('23:00') ? '规律作息' : '晚睡型'}」的${data.gender}性${data.grade}${data.major}专业同学，MBTI为${data.mbti}。`;
+            
+            summary += `你的作息规律度${ratings.sleep}分，卫生整洁度${ratings.clean}分，${data.mindNoise === '非常介意' ? '非常需要安静的宿舍环境' : '对安静有一定需求'}，${data.activity === '愿意' || data.activity === '非常愿意' ? '愿意和舍友一起活动' : '更偏好独处'}。`;
+            
+            summary += `核心需求是「${data.trait}」，最适配${data.personality === '偏内向' ? '性格温和、安静的' : '开朗、健谈的'}舍友，建议避开${data.mindSmoke === '是' ? '吸烟、' : ''}${data.mindNoise === '非常介意' ? '吵闹的' : '作息差异大的'}舍友。`;
+            
+            return summary;
+        }
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 侧边栏切换（和其他页面统一）
+            const btn = document.getElementById('sidebarToggle');
+            const layout = document.getElementById('layoutSidenav');
+            if (btn && layout) {
+                btn.addEventListener('click', function() {
+                    layout.classList.toggle('sb-sidenav-toggled');
+                });
+            }
+
+            // 读取数据并渲染画像
+            const data = getSurveyData();
+            if (data) {
+                // 隐藏无数据提示，显示画像
+                document.getElementById('noDataCard').classList.add('d-none');
+                document.getElementById('profileCard').classList.remove('d-none');
+
+                // 渲染标签云
+                document.getElementById('tagCloud').innerHTML = generateTagCloud(data);
+
+                // 计算并渲染评分
+                const ratings = calculateRatings(data);
+                document.getElementById('ratingSleep').style.width = `${ratings.sleep * 20}%`;
+                document.getElementById('sleepScore').textContent = `${ratings.sleep}分`;
+                
+                document.getElementById('ratingClean').style.width = `${ratings.clean * 20}%`;
+                document.getElementById('cleanScore').textContent = `${ratings.clean}分`;
+                
+                document.getElementById('ratingQuiet').style.width = `${ratings.quiet * 20}%`;
+                document.getElementById('quietScore').textContent = `${ratings.quiet}分`;
+                
+                document.getElementById('ratingSocial').style.width = `${ratings.social * 20}%`;
+                document.getElementById('socialScore').textContent = `${ratings.social}分`;
+                
+                document.getElementById('ratingCompat').style.width = `${ratings.compat * 20}%`;
+                document.getElementById('compatScore').textContent = `${ratings.compat}分`;
+
+                // 渲染匹配标签
+                const matchTags = generateMatchTags(data);
+                document.getElementById('matchTags').innerHTML = matchTags.match;
+                document.getElementById('avoidTags').innerHTML = matchTags.avoid;
+
+                // 渲染总结
+                document.getElementById('profileSummary').textContent = generateSummary(data, ratings);
+            }
+        });
+    </script>
+</body>
+</html>

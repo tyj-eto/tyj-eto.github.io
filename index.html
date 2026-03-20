@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <title>宿舍智能推荐与管理系统</title>
+        <link href="css/styles.css" rel="stylesheet" />
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    </head>
+    <body class="sb-nav-fixed">
+       <!-- 顶部导航栏 -->
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <!-- 先放三条横线按钮（在最左边） -->
+    <button class="btn btn-link btn-sm me-2" id="sidebarToggle" href="#!">
+        <i class="fas fa-bars text-white"></i>
+    </button>
+    <!-- 再放标题，自动跟在按钮后面 -->
+    <a class="navbar-brand" href="index.html">宿舍智能推荐与管理系统</a>
+    <!-- 右侧用户菜单 -->
+    <ul class="navbar-nav ms-auto me-3 me-lg-4">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-user fa-fw"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="#!">个人中心</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li><a class="dropdown-item" href="login.html">退出登录</a></li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+
+        <!-- 左侧菜单栏 -->
+        <div id="layoutSidenav">
+            <div id="layoutSidenav_nav">
+                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                    <div class="sb-sidenav-menu">
+                        <div class="nav">
+                            <div class="sb-sidenav-menu-heading">核心功能</div>
+                            <a class="nav-link active" href="index.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                首页
+                            </a>
+                            <a class="nav-link" href="survey.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-clipboard-list"></i></div>
+                                多维问卷
+                            </a>
+                            <a class="nav-link" href="match.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                加权匹配
+                            </a>
+                            <a class="nav-link" href="profile.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tags"></i></div>
+                                标签画像
+                            </a>
+                            <a class="nav-link" href="location.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-map-marker-alt"></i></div>
+                                宿舍位置
+                            </a>
+                            <div class="sb-sidenav-menu-heading">系统管理</div>
+                            <a class="nav-link" href="dorms.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-home"></i></div>
+                                宿舍中心
+                            </a>
+                            <a class="nav-link" href="personal.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                                个人中心
+                            </a>
+                        </div>
+                    </div>
+                    <div class="sb-sidenav-footer">
+                        <div class="small">Logged in as:</div>
+                        学生用户
+                    </div>
+                </nav>
+            </div>
+
+            <!-- 主内容区（你说的「门里面的界面」） -->
+            <div id="layoutSidenav_content">
+                <main>
+                    <div class="container-fluid px-4">
+                        <h1 class="mt-4">智能匹配 · 精准推荐</h1>
+                        <p class="mb-4">基于多维问卷与加权算法，为你匹配最适合的宿舍与舍友，打造舒适的大学住宿生活</p>
+
+                        <!-- 功能入口卡片（对应你说的「展示所有功能入口」） -->
+                        <div class="row">
+                            <!-- 多维问卷卡片 -->
+                            <div class="col-xl-4 col-md-6 mb-4">
+                                <div class="card border-left-primary shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">多维问卷</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">填写个性化生活习惯问卷</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 加权匹配卡片 -->
+                            <div class="col-xl-4 col-md-6 mb-4">
+                                <div class="card border-left-success shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">加权匹配</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">计算舍友匹配度</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-users fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 标签画像卡片 -->
+                            <div class="col-xl-4 col-md-6 mb-4">
+                                <div class="card border-left-info shadow h-100 py-2">
+                                    <div class="card-body">
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col mr-2">
+                                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">标签画像</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">构建宿舍与舍友特征标签</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <i class="fas fa-tags fa-2x text-gray-300"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 数据展示区（对应你说的「放数据展示」） -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <i class="fas fa-table me-1"></i>
+                                热门宿舍推荐
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>宿舍号</th>
+                                                <th>朝向</th>
+                                                <th>可住人数</th>
+                                                <th>匹配度</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1号楼 604室</td>
+                                                <td>朝南</td>
+                                                <td>4人</td>
+                                                <td>98%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>2号楼 402室</td>
+                                                <td>朝南</td>
+                                                <td>4人</td>
+                                                <td>96%</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+
+                <!-- 页脚 -->
+                <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid px-4">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="text-muted">Copyright &copy; 宿舍智能推荐与管理系统</div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="js/scripts.js"></script>
+    </body>
+</html>

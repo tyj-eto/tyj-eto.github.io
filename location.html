@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <link href="https://use.fontawesome.com/releases/v6.3.0/css/all.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>宿舍位置与周边设施 - 宿舍智能推荐与管理系统</title>
+  <!-- 引入统一的样式资源 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="css/styles.css" rel="stylesheet">
+  <style>
+    /* 统一的样式风格 */
+    .card {
+      border-radius: 0.375rem;
+      box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+    .table th, .table td {
+      vertical-align: middle;
+    }
+    /* 距离标签样式 */
+    .distance-badge {
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      color: white;
+      font-size: 0.875rem;
+    }
+    .distance-green { background-color: #28a745; }
+    .distance-orange { background-color: #fd7e14; }
+    .distance-red { background-color: #dc3545; }
+    /* 地图容器样式 */
+    .map-container {
+      overflow: auto;
+      height: 400px;
+      position: relative;
+    }
+  </style>
+</head>
+<body class="sb-nav-fixed">
+  <!-- 顶部导航栏（和首页一致） -->
+    <!-- 顶部导航栏 -->
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <!-- 三条横线侧边栏切换按钮（最左侧） -->
+  <button class="btn btn-link btn-sm me-2" id="sidebarToggle" href="#!">
+        <i class="fas fa-bars text-white"></i>
+    </button>
+    <!-- 系统标题（跟在按钮后面） -->
+    <a class="navbar-brand" href="index.html">宿舍智能推荐与管理系统</a>
+    <!-- 右侧用户菜单 -->
+    <ul class="navbar-nav ms-auto me-3 me-lg-4">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-user fa-fw"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="#!">个人中心</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li><a class="dropdown-item" href="login.html">退出登录</a></li>
+            </ul>
+        </li>
+    </ul>
+    </nav>
+
+          <!-- 左侧菜单栏 -->
+        <div id="layoutSidenav">
+            <div id="layoutSidenav_nav">
+                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                    <div class="sb-sidenav-menu">
+                        <div class="nav">
+                        <div class="sb-sidenav-menu-heading">核心功能</div>
+                        <a class="nav-link" href="index.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            首页
+                        </a>
+                        <a class="nav-link" href="survey.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-clipboard-list"></i></div>
+                            多维问卷
+                        </a>
+                        <a class="nav-link" href="match.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                            加权匹配
+                        </a>
+                        <a class="nav-link" href="profile.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tags"></i></div>
+                            标签画像
+                        </a>
+                        <a class="nav-link active" href="location.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            宿舍位置
+                        </a>
+                            <div class="sb-sidenav-menu-heading">系统管理</div>
+                            <a class="nav-link" href="dorms.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-home"></i></div>
+                                宿舍中心
+                            </a>
+                            <a class="nav-link" href="personal.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                                个人中心
+                            </a>
+                        </div>
+                    </div>
+                    <div class="sb-sidenav-footer">
+                        <div class="small">Logged in as:</div>
+                        学生用户
+                    </div>
+                </nav>
+            </div>
+
+    <!-- 主内容区 -->
+    <div id="layoutSidenav_content">
+      <main>
+        <div class="container-fluid px-4">
+          <h1 class="mt-4 mb-4">宿舍位置与周边设施</h1>
+          <ol class="breadcrumb mb-4">
+             <li class="breadcrumb-item"><a href="index.html">首页</a></li>
+             <li class="breadcrumb-item active">宿舍位置</li>
+          </ol>
+
+          <div class="row">
+            <!-- 左侧：宿舍距离信息 -->
+            <div class="col-lg-8">
+              <div class="card mb-4">
+                <div class="card-header">
+                  <i class="bi bi-table me-1"></i>
+                  宿舍距离信息
+                </div>
+                <div class="card-body">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>宿舍号</th>
+                        <th>朝向</th>
+                        <th>可住人数</th>
+                        <th>到最近食堂</th>
+                        <th>到最近小卖部</th>
+                        <th>操作</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr data-dorm="1">
+                        <td>1号楼 604室</td>
+                        <td>朝南</td>
+                        <td>4人</td>
+                        <td><span class="distance-badge distance-green">150m (2分钟)</span></td>
+                        <td><span class="distance-badge distance-green">80m (1分钟)</span></td>
+                        <td><button class="btn btn-primary btn-sm view-on-map">在地图查看</button></td>
+                      </tr>
+                      <tr data-dorm="2">
+                        <td>2号楼 402室</td>
+                        <td>朝南</td>
+                        <td>4人</td>
+                        <td><span class="distance-badge distance-orange">300m (5分钟)</span></td>
+                        <td><span class="distance-badge distance-green">100m (2分钟)</span></td>
+                        <td><button class="btn btn-primary btn-sm view-on-map">在地图查看</button></td>
+                      </tr>
+                      <tr data-dorm="3">
+                        <td>3号楼 201室</td>
+                        <td>朝北</td>
+                        <td>4人</td>
+                        <td><span class="distance-badge distance-green">120m (2分钟)</span></td>
+                        <td><span class="distance-badge distance-orange">250m (4分钟)</span></td>
+                        <td><button class="btn btn-primary btn-sm view-on-map">在地图查看</button></td>
+                      </tr>
+                      <tr data-dorm="4">
+                        <td>4号楼 505室</td>
+                        <td>朝东</td>
+                        <td>6人</td>
+                        <td><span class="distance-badge distance-red">500m (8分钟)</span></td>
+                        <td><span class="distance-badge distance-orange">200m (3分钟)</span></td>
+                        <td><button class="btn btn-primary btn-sm view-on-map">在地图查看</button></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- 右侧：校园地图预览 -->
+            <div class="col-lg-4">
+              <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <span><i class="bi bi-map me-1"></i>校园地图预览</span>
+                  <button class="btn btn-outline-secondary btn-sm" id="reset-map">复位</button>
+                </div>
+                <div class="card-body map-container">
+                  <img id="campus-map" src="image/campus-map.jpg" class="img-fluid" alt="校园地图" style="transition: transform 0.3s ease;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- 引入脚本和地图交互逻辑 -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/scripts.js"></script>
+  <script>
+    // 宿舍坐标配置（可根据实际地图调整）
+    const dormPositions = {
+      1: { top: '65%', left: '30%' },
+      2: { top: '67%', left: '32%' },
+      3: { top: '69%', left: '31%' },
+      4: { top: '71%', left: '33%' }
+    };
+
+    // 获取DOM元素
+    const mapContainer = document.querySelector('.map-container');
+    const mapImg = document.getElementById('campus-map');
+    const resetBtn = document.getElementById('reset-map');
+    let currentScale = 1;
+
+    // 地图查看功能
+    document.querySelectorAll('.view-on-map').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // 获取当前宿舍ID
+        const dormId = this.closest('tr').dataset.dorm;
+        const pos = dormPositions[dormId];
+        
+        // 缩放地图并定位到对应宿舍
+        currentScale = 1.5;
+        mapImg.style.transform = `scale(${currentScale})`;
+        mapImg.style.transformOrigin = `${pos.left} ${pos.top}`;
+
+        // 滚动到目标位置
+        const targetX = (parseFloat(pos.left)/100)*mapImg.offsetWidth*currentScale - mapContainer.clientWidth/2;
+        const targetY = (parseFloat(pos.top)/100)*mapImg.offsetHeight*currentScale - mapContainer.clientHeight/2;
+        mapContainer.scrollTo({ 
+          left: Math.max(0, targetX), 
+          top: Math.max(0, targetY), 
+          behavior: 'smooth' 
+        });
+      });
+    });
+
+    // 地图复位功能
+    resetBtn.addEventListener('click', function() {
+      currentScale = 1;
+      mapImg.style.transform = `scale(${currentScale})`;
+      mapImg.style.transformOrigin = 'center center';
+      mapContainer.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+    });
+
+    // 侧边栏切换（和首页保持一致）
+    document.getElementById('sidebarToggle')?.addEventListener('click', function() {
+      document.getElementById('layoutSidenav').classList.toggle('sb-sidenav-toggled');
+    });
+  </script>
+</body>
+</html>

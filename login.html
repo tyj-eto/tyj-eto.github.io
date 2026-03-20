@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN"> <!-- 改成中文语言 -->
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="宿舍智能推荐系统-登录页" />
+        <meta name="author" content="" />
+        <title>学号登录 - 宿舍智能推荐系统</title> <!-- 改标题 -->
+        <link href="css/styles.css" rel="stylesheet" />
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    </head>
+    <body class="bg-primary">
+        <div id="layoutAuthentication">
+            <div id="layoutAuthentication_content">
+                <main>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-5">
+                                <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                    <!-- 改登录标题 -->
+                                    <div class="card-header"><h3 class="text-center font-weight-light my-4">学号认证登录</h3></div>
+                                    <div class="card-body">
+                                        <form>
+                                            <!-- 改学号输入框 -->
+                                            <div class="form-floating mb-3">
+                                                <input class="form-control" id="inputStudentId" type="text" placeholder="请输入学号" /> <!-- 类型改text，适配学号 -->
+                                                <label for="inputStudentId">学号</label> <!-- 标签改学号 -->
+                                            </div>
+                                            <!-- 改密码输入框 -->
+                                            <div class="form-floating mb-3">
+                                                <input class="form-control" id="inputPassword" type="password" placeholder="请输入密码" />
+                                                <label for="inputPassword">密码</label>
+                                            </div>
+                                            <!-- 保留记住密码，改文字 -->
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" id="inputRememberPassword" type="checkbox" value="" />
+                                                <label class="form-check-label" for="inputRememberPassword">记住密码</label>
+                                            </div>
+                                            <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+                                                <!-- 改忘记密码为注册链接 -->
+                                                <a class="small" href="register.html">没有账号？立即注册</a>
+                                                <a class="btn btn-primary" href="index.html">登录系统</a> <!-- 按钮文字改登录系统 -->
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <!-- 底部改更贴合的提示 -->
+                                    <div class="card-footer text-center py-3">
+                                        <div class="small text-muted">© 2026 宿舍智能推荐系统 版权所有</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+            <div id="layoutAuthentication_footer">
+                <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid px-4">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="text-muted">Copyright &copy; 宿舍智能推荐系统 2026</div> <!-- 改版权信息 -->
+                            <div>
+                                <a href="#">隐私说明</a> <!-- 改中文 -->
+                                &middot;
+                                <a href="#">使用条款</a> <!-- 改中文 -->
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="js/scripts.js"></script>
+    </body>
+</html>
